@@ -1,6 +1,7 @@
+
 function getWeather(){
     const apiKey = '7d89786af33bf02c0b72d1710c331c7d';
-    const city = document.getElementById('city').ariaValueMax;
+    const city = document.getElementById('city').value;
 
     if (!city){
         alert('Please enter a city');
@@ -28,5 +29,69 @@ function getWeather(){
             alert('Error fetching hourly forecast. Please try again.');
         });
 }
+function displayWeather(data){
+    const tempDivInfo = document.getElementById('temp-div');
+    const weatherInfoDiv = document.getElementById('weather-info');
+    const weatherIcon = document.getElementById('weather-icon');
+    const hourlyForecastDiv = document.getElementById('hourly-forecast');
+    
+    weatherInfoDiv.innerHTML = '';
+    hourlyForecastDiv.innerHTML = '';
+    tempDivInfo.innerHTML = '';
 
+    //then we have to fill out the code for the weatherIcon, 
+    //then the rest of the null HTML elements(above)
+    if (data.cod === '404') {
+        weatherInfoDiv.innerHTML = `<p>${data.message}</p>`;
+    } else {
+        const cityName = data.name;
+        const temperature = Math.round((data.main.temp - 273.15) * 1.8 + 32) // keep in Farenheit
+        const description = data.weather[0].description;
+        const iconCode = data.weather[0].icon;
+        const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+
+        const temperatureHTML = `
+            <p>${temperature}°F</p>
+        `;
+
+        const weatherHtml = `
+            <p>${cityName}</p>
+            <p>${description}</p>
+        `;
+
+        tempDivInfo.innerHTML = temperatureHTML;
+        weatherInfoDiv.innerHTML = weatherHtml;
+        weatherIcon.src = iconUrl;
+        weatherIcon.alt = description;
+
+        showImage();
+    }
+
+}
+function displayHourlyForecast(hourlyData){
+const hourlyForecastDiv = document.getElementById('hourly-forecast');
+const next24Hours = hourlyData.slice(0,8); //for every three hours (FOR 24 hours) display the weather throughout the day.
+next24Hours.forEach(item => 
+    { const dateTime = new Date(item.dt * 1000); // Convert timestamp to milliseconds
+    const hour = dateTime.getHours();
+    const temperature = Math.round((item.main.temp - 273.15) * 1.8 + 32);
+    const iconCode = item.weather[0].icon;
+    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}.png`;
+
+    const hourlyItemHtml = `
+        <div class="hourly-item">
+            <span>${hour}:00</span>
+            <img src="${iconUrl}" alt="Hourly Weather Icon">
+            <span>${temperature}°F</span>
+        </div>
+    `;
+
+    hourlyForecastDiv.innerHTML += hourlyItemHtml;
+});
+
+}
+function showImage() {
+    const weatherIcon = document.getElementById('weather-icon');
+    weatherIcon.style.display = 'block'; // Make the image visible once it's loaded
+}
 /*what if a city is typed in but is not a valid city? where would that go?*/
