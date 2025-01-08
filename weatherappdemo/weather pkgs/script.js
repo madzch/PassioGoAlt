@@ -9,7 +9,8 @@ function getWeather(){
     }
     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q={city name},{state code},{country code}&appid={API key}`;
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
-    /*fetching data and passing as json*/ 
+    /*fetching data and passing as json*/
+    //not catching the error correctly (why is is saying there is an error fetching current data, then showing hourly only?) 
     fetch(currentWeatherUrl)
         .then(response => response.json())
         .then(data => {
@@ -94,4 +95,4 @@ function showImage() {
     const weatherIcon = document.getElementById('weather-icon');
     weatherIcon.style.display = 'block'; // Make the image visible once it's loaded
 }
-/*what if a city is typed in but is not a valid city? where would that go?*/
+/*what if a city is typed in but is not a valid city? where would that go?, I mean how could you possibly be able to tell?*/
